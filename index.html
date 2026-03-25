@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成都旅游 - 首页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* 基础样式 */
+        body { font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; background-color: #faf7f2; color: #333; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; }
+        .container { width: 90%; max-width: 1400px; margin: 0 auto; }
+        /* 导航栏 - 巴蜀韵味+现代悬浮 */
+        .nav { 
+            background-color: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(12px); 
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03); 
+            position: sticky; 
+            top: 0; 
+            z-index: 999; 
+            padding: 15px 0;
+        }
+        .nav-wrap { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .nav-logo { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: #a62f00; /* 巴蜀红 */
+            display: flex; 
+            align-items: center;
+        }
+        .nav-logo::after { 
+            content: "天府之国"; 
+            font-size: 14px; 
+            font-weight: 400; 
+            color: #666; 
+            margin-left: 8px; 
+        }
+        .nav-list { 
+            display: flex; 
+            gap: 35px; 
+        }
+        .nav-list a { 
+            font-size: 16px; 
+            font-weight: 500; 
+            color: #444; 
+            position: relative; 
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover { 
+            color: #a62f00; 
+        }
+        .nav-list a::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -6px; 
+            left: 0; 
+            width: 0; 
+            height: 2px; 
+            background-color: #a62f00; 
+            transition: width 0.3s ease; 
+        }
+        .nav-list a:hover::after { 
+            width: 100%; 
+        }
+        /* 英雄区 - 沉浸式巴蜀风光 */
+        .hero { 
+            width: 100%; 
+            height: 580px; 
+            position: relative; 
+            overflow: hidden; 
+            margin-bottom: 80px;
+        }
+        .hero-img { 
+            width: 100%; 
+            height: 100%; 
+            background: url("../img/VCG211321423393.jpg") no-repeat center; 
+            background-size: cover; 
+            filter: brightness(0.9);
+        }
+        .hero-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); 
+        }
+        .hero-content { 
+            position: absolute; 
+            top: 50%; 
+            left: 10%; 
+            transform: translateY(-50%); 
+            z-index: 2; 
+            color: white; 
+            max-width: 650px;
+        }
+        .hero-content h1 { 
+            font-size: 52px; 
+            font-weight: 700; 
+            line-height: 1.2; 
+            margin-bottom: 20px; 
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .hero-content p { 
+            font-size: 20px; 
+            opacity: 0.95; 
+            margin-bottom: 30px; 
+            line-height: 1.6;
+        }
+        .hero-btn { 
+            display: inline-block; 
+            padding: 14px 32px; 
+            background-color: #a62f00; 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 500; 
+            border-radius: 8px; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(166, 47, 0, 0.3);
+        }
+        .hero-btn:hover { 
+            background-color: #8c2600; 
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 20px rgba(166, 47, 0, 0.4);
+        }
+        /* 城市介绍 - 卡片式布局 */
+        .intro { 
+            background-color: white; 
+            border-radius: 16px; 
+            padding: 50px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05); 
+            margin-bottom: 90px; 
+            position: relative; 
+            overflow: hidden;
+        }
+        .intro::before { 
+            content: ""; 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            width: 300px; 
+            height: 300px; 
+            background-color: #fef4ee; 
+            border-radius: 50%; 
+            transform: translate(50%, -50%); 
+            z-index: 0;
+        }
+        .intro-content { 
+            position: relative; 
+            z-index: 1; 
+            max-width: 900px;
+        }
+        .intro h2 { 
+            font-size: 32px; 
+            font-weight: 600; 
+            color: #222; 
+            margin-bottom: 25px; 
+            display: flex; 
+            align-items: center;
+        }
+        .intro h2::before { 
+            content: ""; 
+            display: inline-block; 
+            width: 8px; 
+            height: 32px; 
+            background-color: #a62f00; 
+            margin-right: 15px; 
+            border-radius: 4px;
+        }
+        .intro p { 
+            font-size: 17px; 
+            color: #555; 
+            margin-bottom: 20px; 
+            line-height: 1.8;
+        }
+        /* 标志建筑 - 网格+hover动效 */
+        .buildings { 
+            margin-bottom: 100px;
+        }
+        .section-head { 
+            text-align: center; 
+            margin-bottom: 60px;
+        }
+        .section-head h2 { 
+            font-size: 34px; 
+            font-weight: 600; 
+            color: #222; 
+            margin-bottom: 12px; 
+            position: relative; 
+            display: inline-block;
+        }
+        .section-head h2::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -8px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 80px; 
+            height: 3px; 
+            background-color: #a62f00; 
+            border-radius: 3px;
+        }
+        .section-head p { 
+            font-size: 16px; 
+            color: #666; 
+            max-width: 600px; 
+            margin: 0 auto;
+        }
+        .building-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 40px;
+        }
+        .building-card { 
+            background-color: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04); 
+            transition: all 0.4s ease; 
+            cursor: pointer;
+        }
+        .building-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
+        .building-img { 
+            width: 100%; 
+            height: 240px; 
+            background-size: cover; 
+            background-position: center; 
+            transition: transform 0.6s ease;
+        }
+        .building-card:hover .building-img { 
+            transform: scale(1.08);
+        }
+        .building-info { 
+            padding: 30px;
+        }
+        .building-info h4 { 
+            font-size: 22px; 
+            font-weight: 600; 
+            color: #222; 
+            margin-bottom: 12px;
+        }
+        .building-info p { 
+            font-size: 16px; 
+            color: #666; 
+            line-height: 1.7; 
+            margin-bottom: 20px;
+        }
+        .building-link { 
+            display: inline-flex; 
+            align-items: center; 
+            font-size: 15px; 
+            font-weight: 500; 
+            color: #a62f00; 
+            transition: color 0.3s ease;
+        }
+        .building-link i { 
+            margin-left: 8px; 
+            transition: transform 0.3s ease;
+        }
+        .building-link:hover { 
+            color: #8c2600;
+        }
+        .building-link:hover i { 
+            transform: translateX(5px);
+        }
+        /* 页脚 - 调整为右下角布局+缩小间距 */
+        .footer { 
+            background-color: #222; 
+            color: white; 
+            padding: 60px 0 30px; /* 减少上下内边距 */
+        }
+        .footer-wrap { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; /* 底部对齐 */
+            flex-wrap: wrap; 
+            gap: 20px; /* 缩小模块间距（原40px） */
+            margin-bottom: 40px; /* 减少底部间距 */
+        }
+        .footer-left { 
+            flex: 1; 
+            min-width: 300px; /* 保证左侧描述区宽度 */
+        }
+        .footer-logo { 
+            font-size: 26px; 
+            font-weight: 700; 
+            color: #fff; 
+            margin-bottom: 15px; /* 缩小logo与描述间距 */
+        }
+        .footer-desc { 
+            max-width: 350px; 
+            font-size: 14px; 
+            opacity: 0.7; 
+            line-height: 1.6;
+        }
+        /* 右下角导航模块 - 紧凑布局 */
+        .footer-nav-group { 
+            display: flex; 
+            gap: 40px; /* 两个导航模块间距 */
+        }
+        .footer-col { 
+            min-width: 120px; /* 最小宽度保证布局稳定 */
+        }
+        .footer-col h5 { 
+            font-size: 16px; 
+            font-weight: 600; 
+            margin-bottom: 12px; /* 缩小标题与列表间距（原25px） */
+            position: relative; 
+            padding-bottom: 6px; /* 缩小标题下划线间距 */
+        }
+        .footer-col h5::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 30px; /* 缩短下划线（原40px） */
+            height: 2px; 
+            background-color: #a62f00;
+        }
+        .footer-col ul { 
+            list-style: none;
+        }
+        .footer-col li { 
+            margin-bottom: 8px; /* 缩小列表项间距（原15px） */
+        }
+        .footer-col a { 
+            font-size: 14px; /* 缩小字体（原15px） */
+            opacity: 0.7; 
+            transition: all 0.3s ease;
+        }
+        .footer-col a:hover { 
+            opacity: 1; 
+            color: #a62f00; 
+            padding-left: 3px; /* 缩小hover偏移（原5px） */
+        }
+        .footer-bottom { 
+            text-align: center; 
+            padding-top: 30px; /* 减少底部边框上间距（原40px） */
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            font-size: 13px; /* 缩小版权文字（原14px） */
+            opacity: 0.6;
+        }
+        /* 响应式调整 - 适配移动端 */
+        @media (max-width: 1200px) {
+            .hero-content h1 { 
+                font-size: 44px; 
+            }
+            .building-grid { 
+                gap: 30px; 
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-wrap { 
+                flex-direction: column; 
+                gap: 15px; 
+            }
+            .nav-list { 
+                gap: 20px; 
+            }
+            .hero { 
+                height: 400px; 
+            }
+            .hero-content h1 { 
+                font-size: 32px; 
+            }
+            .hero-content p { 
+                font-size: 16px; 
+            }
+            .intro { 
+                padding: 30px; 
+            }
+            .intro h2 { 
+                font-size: 26px; 
+            }
+            .section-head h2 { 
+                font-size: 28px; 
+            }
+            .building-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .building-img { 
+                height: 200px; 
+            }
+            /* 移动端页脚 - 垂直排列 */
+            .footer-wrap { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 30px; 
+            }
+            .footer-nav-group { 
+                flex-direction: column; 
+                gap: 20px; 
+                width: 100%; 
+            }
+            .footer-col { 
+                min-width: 100%; 
+            }
+        }
+    </style>
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <div class="container nav-wrap">
+            <div class="nav-logo">成都旅游</div>
+            <div class="nav-list">
+                <a href="index.html">首页</a>
+                <a href="scenic.html">必游景点</a>
+                <a href="food.html">特色美食</a>
+                <a href="guide.html">旅游攻略</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 英雄区 -->
+    <div class="hero">
+        <div class="hero-img"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>成都 · 一座来了就不想走的城市</h1>
+            <p>在麻辣鲜香中品味生活，在青砖黛瓦间探寻千年文脉，在熊猫的憨态中感受治愈</p>
+        </div>
+    </div>
+
+    <!-- 城市介绍 -->
+    <div class="container">
+        <div class="intro">
+            <div class="intro-content">
+                <h2>欢迎来到天府之国</h2>
+                <p>成都是四川省省会，国家中心城市，拥有2300多年建城史，是古蜀文明的发祥地。这座城市兼具历史底蕴与现代活力，既有憨态可掬的大熊猫，也有麻辣鲜香的火锅；既有古色古香的宽窄巷子，也有繁华现代的春熙路。</p>
+                <p>成都以“安逸”闻名，却从不缺乏活力。在这里，你可以在茶馆里泡一下午，感受慢节奏的生活；也可以在街头巷尾打卡网红景点，体验新潮的都市文化。无论是美食、美景还是人文，成都都能给你带来独一无二的旅行体验，让每个到访者都流连忘返。</p>
+            </div>
+        </div>
+
+        <!-- 标志建筑板块 -->
+        <div class="buildings">
+            <div class="section-head">
+                <h2>成都标志建筑</h2>
+                <p>融合历史与现代，这些建筑见证了成都的变迁，是这座城市的独特名片</p>
+            </div>
+            <div class="building-grid">
+                <div class="building-card">
+                    <a href="building1.html" class="building-link-full">
+                        <div class="building-img" style="background-image: url('../img/VCG211451048528.jpg')"></div>
+                        <div class="building-info">
+                            <h4>成都天府广场</h4>
+                            <p>城市心脏地带，融合历史与现代的地标，周边环绕四川省图书馆、四川美术馆等文化场馆，是成都的政治、文化和商业中心。</p>
+                            <span class="building-link">查看详情 <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="building-card">
+                    <a href="building2.html" class="building-link-full">
+                        <div class="building-img" style="background-image: url('../img/VCG211345495694.jpg')"></div>
+                        <div class="building-info">
+                            <h4>蜀风雅韵川剧院</h4>
+                            <p>坐落于青羊宫旁，建筑风格充满川西民居的古朴韵味，是传承川剧艺术的重要场所，可体验变脸、吐火等经典绝技。</p>
+                            <span class="building-link">查看详情 <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="building-card">
+                    <a href="building3.html" class="building-link-full">
+                        <div class="building-img" style="background-image: url('../img/VCG211315571046.jpg')"></div>
+                        <div class="building-info">
+                            <h4>成都电视塔</h4>
+                            <p>西部第一高塔，塔高339米，兼具广播电视发射与旅游观光功能，高空观景台和玻璃栈道可360°俯瞰成都全城风光。</p>
+                            <span class="building-link">查看详情 <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+                <div class="building-card">
+                    <a href="building4.html" class="building-link-full">
+                        <div class="building-img" style="background-image: url('../img/444.png')"></div>
+                        <div class="building-info">
+                            <h4>杜甫草堂</h4>
+                            <p>唐代大诗人杜甫流寓成都时的故居，中国规模最大、保存最完好的杜甫纪念地，川西古典园林风格，清幽雅致。</p>
+                            <span class="building-link">查看详情 <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 - 右下角导航布局 -->
+    <div class="footer">
+        <div class="container footer-wrap">
+            <!-- 左侧描述区 -->
+            <div class="footer-left">
+                <div class="footer-logo">成都旅游指南</div>
+                <p class="footer-desc">为您提供最全面的成都旅游资讯，带您领略天府之国的独特魅力，让每一次旅行都充满惊喜与美好。</p>
+            </div>
+
+            <!-- 右下角导航组（快速导航+热门建筑） -->
+            <div class="footer-nav-group">
+                <div class="footer-col">
+                    <h5>快速导航</h5>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="scenic.html">必游景点</a></li>
+                        <li><a href="food.html">特色美食</a></li>
+                        <li><a href="guide.html">旅游攻略</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>热门建筑</h5>
+                    <ul>
+                        <li><a href="building1.html">天府广场</a></li>
+                        <li><a href="building2.html">蜀风雅韵川剧院</a></li>
+                        <li><a href="building3.html">成都电视塔</a></li>
+                        <li><a href="building4.html">杜甫草堂</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 成都旅游指南 版权所有 | 精心打造每一份旅游体验
+        </div>
+    </div>
+</body>
+</html>

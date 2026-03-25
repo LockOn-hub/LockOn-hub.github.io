@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>锦里古街 - 详情页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Inter", "Microsoft YaHei", sans-serif; 
+            color: #333; 
+            line-height: 1.6; 
+            background: linear-gradient(120deg, #fef7fb 0%, #f0f8fb 50%, #fcf1f7 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        /* 导航栏样式（与主站一致） */
+        .nav { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 999; }
+        .nav-container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 18px 0; display: flex; justify-content: center; align-items: center; }
+        .nav a { color: #333; text-decoration: none; margin: 0 20px; font-size: 16px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+        .nav a:hover { color: #cd5c5c; }
+        .nav a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: #cd5c5c; transition: width 0.3s ease; }
+        .nav a:hover::after { width: 100%; }
+        /* 内容容器 */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto 60px; }
+        /* 轮播图样式 */
+        .detail-swiper { width: 100%; height: 450px; border-radius: 12px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); }
+        .swiper-slide { width: 100%; height: 100%; }
+        .swiper-img { width: 100%; height: 100%; object-fit: cover; }
+        /* 页面标题 */
+        .detail-title { margin-bottom: 30px; }
+        .detail-title h2 { color: #222; font-size: 30px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; }
+        .detail-title h2::before { content: ""; display: inline-block; width: 6px; height: 24px; background-color: #cd5c5c; margin-right: 12px; border-radius: 3px; }
+        .detail-breadcrumb { font-size: 14px; color: #666; }
+        .detail-breadcrumb a { color: #cd5c5c; text-decoration: none; }
+        .detail-breadcrumb a:hover { text-decoration: underline; }
+        /* 详情内容布局 */
+        .detail-content { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-bottom: 40px; }
+        /* 左侧主要内容 */
+        .main-content { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .content-section { margin-bottom: 30px; }
+        .content-section h3 { color: #222; font-size: 22px; font-weight: 600; margin-bottom: 15px; position: relative; padding-bottom: 8px; }
+        .content-section h3::after { content: ""; position: absolute; bottom: 0; left: 0; width: 50px; height: 2px; background-color: #cd5c5c; }
+        .content-section p { font-size: 15px; color: #666; line-height: 1.8; margin-bottom: 15px; }
+        .feature-list { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; }
+        .feature-item { display: flex; align-items: center; gap: 8px; background-color: #fef0f0; padding: 8px 16px; border-radius: 20px; font-size: 14px; color: #cd5c5c; }
+        .feature-item i { font-size: 14px; }
+        /* 小吃推荐卡片 */
+        .food-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .food-item { background-color: #f8f9fa; border-radius: 8px; padding: 15px; text-align: center; }
+        .food-icon { width: 48px; height: 48px; margin: 0 auto 10px; background-color: #fef0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .food-icon i { color: #cd5c5c; font-size: 20px; }
+        .food-name { font-size: 16px; color: #222; font-weight: 500; margin-bottom: 5px; }
+        .food-desc { font-size: 13px; color: #666; }
+        /* 夜景观赏指南 */
+        .night-view { background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .night-view h4 { color: #222; font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; }
+        .night-view h4 i { color: #cd5c5c; margin-right: 8px; }
+        .night-view ul { list-style: none; }
+        .night-view li { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; color: #666; }
+        .night-view li i { color: #cd5c5c; font-size: 12px; }
+        /* 右侧侧边栏（实用信息） */
+        .sidebar { background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); height: fit-content; }
+        .sidebar-title { font-size: 18px; font-weight: 600; color: #222; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+        .info-list { list-style: none; }
+        .info-item { display: flex; margin-bottom: 18px; align-items: flex-start; }
+        .info-icon { width: 24px; height: 24px; background-color: #fef0f0; color: #cd5c5c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; font-size: 12px; }
+        .info-text { flex: 1; }
+        .info-text label { font-size: 14px; color: #999; margin-bottom: 4px; display: block; }
+        .info-text value { font-size: 15px; color: #333; font-weight: 500; }
+        /* 周边推荐 */
+        .related-spots { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .related-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .related-item { border-radius: 8px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; }
+        .related-item:hover { transform: translateY(-5px); }
+        .related-img { width: 100%; height: 120px; object-fit: cover; }
+        .related-info { padding: 15px; }
+        .related-info h4 { font-size: 16px; color: #222; font-weight: 500; margin-bottom: 5px; }
+        .related-info p { font-size: 13px; color: #666; line-height: 1.5; }
+        .related-link { text-decoration: none; display: block; }
+        /* 页脚样式（与主站一致） */
+        .footer { background-color: #222; color: white; padding: 60px 0 30px; }
+        .footer-container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 40px; }
+        .footer-logo { font-size: 24px; font-weight: 700; color: #cd5c5c; margin-bottom: 15px; }
+        .footer-desc { max-width: 300px; font-size: 14px; opacity: 0.7; line-height: 1.6; }
+        .footer-links { display: flex; gap: 40px; }
+        .footer-link-group h5 { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .footer-link-group ul { list-style: none; }
+        .footer-link-group li { margin-bottom: 10px; }
+        .footer-link-group a { color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.3s ease; }
+        .footer-link-group a:hover { opacity: 1; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.6; }
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .detail-content { grid-template-columns: 1fr; }
+            .detail-swiper { height: 350px; }
+        }
+        @media (max-width: 768px) {
+            .nav a { margin: 0 10px; font-size: 14px; }
+            .detail-title h2 { font-size: 26px; }
+            .main-content, .related-spots { padding: 25px; }
+            .content-section h3 { font-size: 20px; }
+            .detail-swiper { height: 280px; }
+            .footer-top { flex-direction: column; gap: 30px; }
+        }
+        @media (max-width: 480px) {
+            .related-list { grid-template-columns: 1fr; }
+            .detail-swiper { height: 220px; }
+        }
+    </style>
+    <!-- 引入图标库和轮播插件 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <div class="nav-container">
+            <a href="index.html">首页</a>
+            <a href="scenic.html">必游景点</a>
+            <a href="food.html">特色美食</a>
+            <a href="guide.html">旅游攻略</a>
+        </div>
+    </div>
+
+    <!-- 内容容器 -->
+    <div class="container">
+        <!-- 轮播图 -->
+        <div class="detail-swiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="../img/VCG211433457648.jpg" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/VCG211328306644.jpg" alt="锦里古街夜景" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/VCG211360759322.jpg" alt="锦里特色小吃" class="swiper-img">
+                </div>
+            </div>
+            <!-- 轮播控制按钮 -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <!-- 页面标题和面包屑 -->
+        <div class="detail-title">
+            <h2>锦里古街</h2>
+            <div class="detail-breadcrumb">
+                <a href="index.html">首页</a> > <a href="scenic.html">必游景点</a> > 锦里古街详情
+            </div>
+        </div>
+
+        <!-- 详情内容布局 -->
+        <div class="detail-content">
+            <!-- 左侧主要内容 -->
+            <div class="main-content">
+                <!-- 景点介绍 -->
+                <div class="content-section">
+                    <h3>景点介绍</h3>
+                    <p>锦里古街位于成都市武侯区武侯祠大街中段，紧邻武侯祠，是一条以三国文化、川西民风民俗为特色的仿古商业街，被誉为“西蜀第一街”“成都版清明上河图”。</p>
+                    <p>锦里古街始建于三国时期，最初是武侯祠的附属街道，用于祭祀诸葛亮的官员和百姓休憩购物，历经千年变迁，如今的锦里是2004年在原址基础上重建的，全长550米，建筑面积1.4万平方米。</p>
+                    <p>古街以明清时期的川西民居建筑为主体，青瓦错落有致，红灯笼高悬林立，古建筑鳞次栉比，街道两旁布满了特色小吃店、手工艺品店、茶馆、客栈等。这里白天古色古香，夜晚灯火辉煌，仿佛穿越回古蜀时期，是感受成都民俗文化和三国历史底蕴的绝佳去处。</p>
+                </div>
+
+                <!-- 核心看点 -->
+                <div class="content-section">
+                    <h3>核心看点</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fa-solid fa-lightbulb"></i> 锦里夜景
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-utensils"></i> 特色小吃街
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-gift"></i> 手工艺品店
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-theater-masks"></i> 民俗表演
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-torii-gate"></i> 古蜀建筑
+                        </div>
+                    </div>
+                    <p><strong>锦里夜景</strong>：夜晚的锦里是最美的，红灯笼全部点亮，灯火辉煌，与古建筑交相辉映，氛围感拉满，是拍照打卡的绝佳时机，也是锦里最具代表性的看点。</p>
+                    <p><strong>特色小吃街</strong>：街道两侧汇集了成都各类特色小吃，三大炮、蛋烘糕、糖油果子、伤心凉粉等应有尽有，是吃货的天堂，能一站式品尝地道成都风味。</p>
+                    <p><strong>手工艺品店</strong>：这里有众多非遗手工艺品店，蜀绣、竹编、剪纸、糖画等传统技艺琳琅满目，既能观赏制作过程，也能购买特色纪念品。</p>
+                    <p><strong>民俗表演</strong>：古街内设有多个民俗表演场地，每天有川剧变脸、皮影戏、民乐演奏等表演，游客可以近距离感受川西民俗文化的魅力。</p>
+                </div>
+
+                <!-- 小吃推荐 -->
+                <div class="content-section">
+                    <h3>必吃特色小吃</h3>
+                    <div class="food-card">
+                        <div class="food-item">
+                            <div class="food-icon">
+                                <i class="fa-solid fa-bowl-rice"></i>
+                            </div>
+                            <div class="food-name">三大炮</div>
+                            <div class="food-desc">糯米制成的甜品，口感软糯，香甜可口，制作过程极具观赏性</div>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-icon">
+                                <i class="fa-solid fa-cookie"></i>
+                            </div>
+                            <div class="food-name">蛋烘糕</div>
+                            <div class="food-desc">成都传统小吃，外皮酥脆，内馅丰富，甜咸皆宜</div>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-icon">
+                                <i class="fa-solid fa-pepper-hot"></i>
+                            </div>
+                            <div class="food-name">伤心凉粉</div>
+                            <div class="food-desc">口感爽滑，辣味十足，吃起来让人“伤心”又上瘾</div>
+                        </div>
+                        <div class="food-item">
+                            <div class="food-icon">
+                                <i class="fa-solid fa-candy-cane"></i>
+                            </div>
+                            <div class="food-name">糖油果子</div>
+                            <div class="food-desc">外酥内糯，香甜可口，撒上芝麻后香气扑鼻</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 夜景观赏指南 -->
+                <div class="content-section">
+                    <h3>夜景观赏指南</h3>
+                    <div class="night-view">
+                        <h4><i class="fa-solid fa-moon"></i> 最佳观赏攻略</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> <strong>最佳时间</strong>：19:00-21:00（此时灯笼全部点亮，天色未完全变黑，光线适宜拍照）</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>最佳地点</strong>：古街入口处、中段拱桥、武侯祠出口附近（视野开阔，能拍摄古街全景）</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>拍照技巧</strong>：使用夜景模式拍摄，避免手抖；可利用灯笼作为前景，增加画面层次感；人物拍摄建议穿浅色衣物，与红灯笼形成对比</li>
+                            <li><i class="fa-solid fa-check"></i> <strong>注意事项</strong>：夜晚人流量较大，注意保管好个人财物；部分店铺22:00后开始关门，建议提前规划行程</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 游玩贴士 -->
+                <div class="content-section">
+                    <h3>游玩贴士</h3>
+                    <p>1. <strong>最佳游览时间</strong>：下午16:00-21:00（既能感受白天的古色古香，又能欣赏夜晚的灯火辉煌，建议预留5-6小时）。</p>
+                    <p>2. <strong>交通建议</strong>：地铁3号线高升桥站D口出，步行10分钟即可到达；公交1路、57路、82路、334路等直达武侯祠站，下车后步行5分钟。</p>
+                    <p>3. <strong>避坑指南</strong>：景区内小吃价格略高于市区，可适量品尝；购买手工艺品时可适当讲价；部分民俗表演需单独收费，提前确认价格和表演时间。</p>
+                    <p>4. <strong>民俗体验</strong>：推荐体验糖画制作（人均10元）、川剧变脸表演（人均50元）、盖碗茶（人均30元），感受地道川西民俗。</p>
+                    <p>5. <strong>周边联动</strong>：锦里与武侯祠相邻，可购买联票（武侯祠门票50元，锦里免费），上午游览武侯祠，下午逛锦里，一站式感受三国文化。</p>
+                </div>
+            </div>
+
+            <!-- 右侧侧边栏（实用信息） -->
+            <div class="sidebar">
+                <h3 class="sidebar-title">实用信息</h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>开放时间</label>
+                            <value>10:00-22:00（夏季）<br>10:00-21:30（冬季）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>门票价格</label>
+                            <value>免费开放（部分体验项目收费）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-bus"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>公共交通</label>
+                            <value>地铁3号线高升桥站D口出<br>公交1路、57路、82路、334路</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>地址</label>
+                            <value>成都市武侯区武侯祠大街231号</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>建议游玩时长</label>
+                            <value>3-4小时（含夜景）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>咨询电话</label>
+                            <value>028-85538917</value>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 周边推荐 -->
+        <div class="related-spots">
+            <h3>周边推荐景点</h3>
+            <div class="related-list">
+                <a href="panda-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/555.jpg" alt="大熊猫基地" class="related-img">
+                        <div class="related-info">
+                            <h4>大熊猫繁育研究基地</h4>
+                            <p>国宝大熊猫栖息地，距离锦里约20分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="kuanzhai-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/VCG211314181603.jpg" alt="宽窄巷子" class="related-img">
+                        <div class="related-info">
+                            <h4>宽窄巷子</h4>
+                            <p>老成都市井文化代表，距离锦里约15分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="building4.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/444.png" alt="杜甫草堂" class="related-img">
+                        <div class="related-info">
+                            <h4>杜甫草堂</h4>
+                            <p>古典园林式建筑，距离锦里约18分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-left">
+                    <div class="footer-logo">成都旅游指南</div>
+                    <p class="footer-desc">为您提供最全面的成都旅游资讯，带您领略天府之国的独特魅力</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h5>快速导航</h5>
+                        <ul>
+                            <li><a href="index.html">首页</a></li>
+                            <li><a href="scenic.html">必游景点</a></li>
+                            <li><a href="food.html">特色美食</a></li>
+                            <li><a href="guide.html">旅游攻略</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>热门建筑</h5>
+                        <ul>
+                            <li><a href="building1.html">天府广场</a></li>
+                            <li><a href="building2.html">蜀风雅韵川剧院</a></li>
+                            <li><a href="building3.html">成都电视塔</a></li>
+                            <li><a href="building4.html">杜甫草堂</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>景点详情</h5>
+                        <ul>
+                            <li><a href="panda-detail.html">大熊猫基地</a></li>
+                            <li><a href="kuanzhai-detail.html">宽窄巷子</a></li>
+                            <li><a href="jinli-detail.html">锦里古街</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 成都旅游指南 版权所有 | 精心打造每一份旅游体验
+            </div>
+        </div>
+    </div>
+
+    <!-- 轮播初始化脚本 -->
+    <script>
+        const swiper = new Swiper('.detail-swiper', {
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+        });
+    </script>
+</body>
+</html>

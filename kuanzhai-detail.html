@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宽窄巷子 - 详情页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Inter", "Microsoft YaHei", sans-serif; 
+            color: #333; 
+            line-height: 1.6; 
+            background: linear-gradient(120deg, #fef7fb 0%, #f0f8fb 50%, #fcf1f7 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        /* 导航栏样式（与主站一致） */
+        .nav { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 999; }
+        .nav-container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 18px 0; display: flex; justify-content: center; align-items: center; }
+        .nav a { color: #333; text-decoration: none; margin: 0 20px; font-size: 16px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+        .nav a:hover { color: #cd5c5c; }
+        .nav a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: #cd5c5c; transition: width 0.3s ease; }
+        .nav a:hover::after { width: 100%; }
+        /* 内容容器 */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto 60px; }
+        /* 轮播图样式 */
+        .detail-swiper { width: 100%; height: 450px; border-radius: 12px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); }
+        .swiper-slide { width: 100%; height: 100%; }
+        .swiper-img { width: 100%; height: 100%; object-fit: cover; }
+        /* 页面标题 */
+        .detail-title { margin-bottom: 30px; }
+        .detail-title h2 { color: #222; font-size: 30px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; }
+        .detail-title h2::before { content: ""; display: inline-block; width: 6px; height: 24px; background-color: #cd5c5c; margin-right: 12px; border-radius: 3px; }
+        .detail-breadcrumb { font-size: 14px; color: #666; }
+        .detail-breadcrumb a { color: #cd5c5c; text-decoration: none; }
+        .detail-breadcrumb a:hover { text-decoration: underline; }
+        /* 详情内容布局 */
+        .detail-content { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-bottom: 40px; }
+        /* 左侧主要内容 */
+        .main-content { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .content-section { margin-bottom: 30px; }
+        .content-section h3 { color: #222; font-size: 22px; font-weight: 600; margin-bottom: 15px; position: relative; padding-bottom: 8px; }
+        .content-section h3::after { content: ""; position: absolute; bottom: 0; left: 0; width: 50px; height: 2px; background-color: #cd5c5c; }
+        .content-section p { font-size: 15px; color: #666; line-height: 1.8; margin-bottom: 15px; }
+        .feature-list { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; }
+        .feature-item { display: flex; align-items: center; gap: 8px; background-color: #fef0f0; padding: 8px 16px; border-radius: 20px; font-size: 14px; color: #cd5c5c; }
+        .feature-item i { font-size: 14px; }
+        /* 游玩路线 */
+        .route-card { background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .route-card h4 { color: #222; font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; }
+        .route-card h4 i { color: #cd5c5c; margin-right: 8px; }
+        .route-list { list-style: none; }
+        .route-list li { display: flex; margin-bottom: 12px; align-items: flex-start; }
+        .route-step { width: 24px; height: 24px; background-color: #cd5c5c; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; font-size: 12px; font-weight: 600; }
+        .route-text { flex: 1; font-size: 14px; color: #666; }
+        /* 右侧侧边栏（实用信息） */
+        .sidebar { background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); height: fit-content; }
+        .sidebar-title { font-size: 18px; font-weight: 600; color: #222; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+        .info-list { list-style: none; }
+        .info-item { display: flex; margin-bottom: 18px; align-items: flex-start; }
+        .info-icon { width: 24px; height: 24px; background-color: #fef0f0; color: #cd5c5c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; font-size: 12px; }
+        .info-text { flex: 1; }
+        .info-text label { font-size: 14px; color: #999; margin-bottom: 4px; display: block; }
+        .info-text value { font-size: 15px; color: #333; font-weight: 500; }
+        /* 周边推荐 */
+        .related-spots { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .related-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .related-item { border-radius: 8px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; }
+        .related-item:hover { transform: translateY(-5px); }
+        .related-img { width: 100%; height: 120px; object-fit: cover; }
+        .related-info { padding: 15px; }
+        .related-info h4 { font-size: 16px; color: #222; font-weight: 500; margin-bottom: 5px; }
+        .related-info p { font-size: 13px; color: #666; line-height: 1.5; }
+        .related-link { text-decoration: none; display: block; }
+        /* 页脚样式（与主站一致） */
+        .footer { background-color: #222; color: white; padding: 60px 0 30px; }
+        .footer-container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 40px; }
+        .footer-logo { font-size: 24px; font-weight: 700; color: #cd5c5c; margin-bottom: 15px; }
+        .footer-desc { max-width: 300px; font-size: 14px; opacity: 0.7; line-height: 1.6; }
+        .footer-links { display: flex; gap: 40px; }
+        .footer-link-group h5 { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .footer-link-group ul { list-style: none; }
+        .footer-link-group li { margin-bottom: 10px; }
+        .footer-link-group a { color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.3s ease; }
+        .footer-link-group a:hover { opacity: 1; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.6; }
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .detail-content { grid-template-columns: 1fr; }
+            .detail-swiper { height: 350px; }
+        }
+        @media (max-width: 768px) {
+            .nav a { margin: 0 10px; font-size: 14px; }
+            .detail-title h2 { font-size: 26px; }
+            .main-content, .related-spots { padding: 25px; }
+            .content-section h3 { font-size: 20px; }
+            .detail-swiper { height: 280px; }
+            .footer-top { flex-direction: column; gap: 30px; }
+        }
+        @media (max-width: 480px) {
+            .related-list { grid-template-columns: 1fr; }
+            .detail-swiper { height: 220px; }
+        }
+    </style>
+    <!-- 引入图标库和轮播插件 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <div class="nav-container">
+            <a href="index.html">首页</a>
+            <a href="scenic.html">必游景点</a>
+            <a href="food.html">特色美食</a>
+            <a href="guide.html">旅游攻略</a>
+        </div>
+    </div>
+
+    <!-- 内容容器 -->
+    <div class="container">
+        <!-- 轮播图 -->
+        <div class="detail-swiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="../img/VCG211372498465.jpg" alt="宽窄巷子全景" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/VCG211328287944.jpg" alt="宽窄巷子老街" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/VCG211366087004.jpg" alt="宽窄巷子特色店铺" class="swiper-img">
+                </div>
+            </div>
+            <!-- 轮播控制按钮 -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <!-- 页面标题和面包屑 -->
+        <div class="detail-title">
+            <h2>宽窄巷子</h2>
+            <div class="detail-breadcrumb">
+                <a href="index.html">首页</a> > <a href="scenic.html">必游景点</a> > 宽窄巷子详情
+            </div>
+        </div>
+
+        <!-- 详情内容布局 -->
+        <div class="detail-content">
+            <!-- 左侧主要内容 -->
+            <div class="main-content">
+                <!-- 景点介绍 -->
+                <div class="content-section">
+                    <h3>景点介绍</h3>
+                    <p>宽窄巷子位于成都市青羊区，由宽巷子、窄巷子、井巷子三条平行排列的老式街道组成，是成都遗留下来的较成规模的清末民初民居建筑群，被誉为“老成都的城市名片”。</p>
+                    <p>宽窄巷子始建于康熙年间，最初为八旗子弟居住的营房，历经三百余年变迁，如今已成为集民俗文化、特色商业、休闲娱乐于一体的旅游景区。街道保留了川西民居的青瓦白墙、四合院落、雕花门窗等建筑特色，同时融入了现代商业元素，形成了“老成都、慢生活”的独特氛围。</p>
+                    <p>这里既有老成都的市井烟火气，也有现代都市的时尚潮流感。游客可以漫步老街，参观清末民初的民居建筑，品尝地道的成都小吃，体验川剧变脸、盖碗茶等民俗文化，感受老成都的安逸与惬意。</p>
+                </div>
+
+                <!-- 核心看点 -->
+                <div class="content-section">
+                    <h3>核心看点</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fa-solid fa-building"></i> 宽巷子（民俗生活）
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-store"></i> 窄巷子（特色商业）
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-paint-brush"></i> 井巷子（文化艺术）
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-mug-hot"></i> 老茶馆
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-theater-masks"></i> 川剧表演
+                        </div>
+                    </div>
+                    <p><strong>宽巷子</strong>：三条巷子中最宽的一条，以“民俗生活”为主题，保留了大量的四合院落，设有多家茶馆、客栈和民俗体验馆，游客可以在这里体验盖碗茶、采耳等老成都特色服务。</p>
+                    <p><strong>窄巷子</strong>：以“特色商业”为主题，街道两侧布满了特色小店、文创工作室、西餐酒吧等，既有传统手工艺品，也有现代潮流商品，是年轻人打卡购物的热门地点。</p>
+                    <p><strong>井巷子</strong>：以“文化艺术”为主题，最具特色的是长达300米的“老成都民俗留影墙”，墙上雕刻着老成都的市井生活场景，是拍照留念的绝佳地点；此外还有多家艺术画廊和非遗工作室。</p>
+                </div>
+
+                <!-- 游玩路线 -->
+                <div class="content-section">
+                    <h3>推荐游玩路线</h3>
+                    <div class="route-card">
+                        <h4><i class="fa-solid fa-route"></i> 1.5小时经典路线</h4>
+                        <ul class="route-list">
+                            <li>
+                                <div class="route-step">1</div>
+                                <div class="route-text">从宽窄巷子东门进入，先游览<strong>宽巷子</strong>，参观四合院落，在茶馆喝一杯盖碗茶，体验老成都慢生活。</div>
+                            </li>
+                            <li>
+                                <div class="route-step">2</div>
+                                <div class="route-text">步行至<strong>窄巷子</strong>，逛特色小店，购买文创产品，品尝蛋烘糕、糖油果子等小吃。</div>
+                            </li>
+                            <li>
+                                <div class="route-step">3</div>
+                                <div class="route-text">前往<strong>井巷子</strong>，在民俗留影墙拍照打卡，参观非遗工作室，感受老成都文化艺术氛围。</div>
+                            </li>
+                            <li>
+                                <div class="route-step">4</div>
+                                <div class="route-text">从西门出，前往附近的奎星楼街，品尝地道川菜和火锅，结束行程。</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 游玩贴士 -->
+                <div class="content-section">
+                    <h3>游玩贴士</h3>
+                    <p>1. <strong>最佳游览时间</strong>：下午14:00-17:00（光线适宜，适合拍照）；晚上19:00-21:00（灯光璀璨，氛围浪漫，人流量较少）。</p>
+                    <p>2. <strong>交通建议</strong>：地铁4号线宽窄巷子站B口出，步行5分钟即可到达；公交5路、13路、43路等多条线路直达。</p>
+                    <p>3. <strong>避坑指南</strong>：景区内小吃价格偏高，可前往附近的奎星楼街、小通巷品尝性价比更高的美食；警惕路边“低价采耳”“低价川剧表演”的陷阱，选择正规店铺消费。</p>
+                    <p>4. <strong>拍照技巧</strong>：宽巷子的四合院落、窄巷子的特色店铺门头、井巷子的民俗留影墙都是绝佳拍摄点；建议使用广角镜头拍摄街道全景，长焦镜头捕捉建筑细节。</p>
+                    <p>5. <strong>特色体验</strong>：推荐体验盖碗茶（人均30元左右）、采耳（人均50元左右）、川剧变脸表演（人均80元左右），感受地道的成都民俗文化。</p>
+                </div>
+            </div>
+
+            <!-- 右侧侧边栏（实用信息） -->
+            <div class="sidebar">
+                <h3 class="sidebar-title">实用信息</h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>开放时间</label>
+                            <value>全天开放（商铺营业时间9:00-22:00）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>门票价格</label>
+                            <value>免费（部分体验馆和表演需单独收费）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-bus"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>公共交通</label>
+                            <value>地铁4号线宽窄巷子站B口出<br>公交5路、13路、43路、47路</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>地址</label>
+                            <value>成都市青羊区金河路18号</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>建议游玩时长</label>
+                            <value>1.5-2小时</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>咨询电话</label>
+                            <value>028-86256201</value>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 周边推荐 -->
+        <div class="related-spots">
+            <h3>周边推荐景点</h3>
+            <div class="related-list">
+                <a href="panda-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/555.jpg" alt="大熊猫基地" class="related-img">
+                        <div class="related-info">
+                            <h4>大熊猫繁育研究基地</h4>
+                            <p>国宝大熊猫栖息地，距离宽窄巷子约15分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="jinli-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/VCG211433457648.jpg" alt="锦里古街" class="related-img">
+                        <div class="related-info">
+                            <h4>锦里古街</h4>
+                            <p>三国文化主题古街，距离宽窄巷子约20分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="building1.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/1bd1d084ad3892ce61bd28c7e750638e.jpg" alt="天府广场" class="related-img">
+                        <div class="related-info">
+                            <h4>天府广场</h4>
+                            <p>成都城市中心，距离宽窄巷子约10分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-left">
+                    <div class="footer-logo">成都旅游指南</div>
+                    <p class="footer-desc">为您提供最全面的成都旅游资讯，带您领略天府之国的独特魅力</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h5>快速导航</h5>
+                        <ul>
+                            <li><a href="index.html">首页</a></li>
+                            <li><a href="scenic.html">必游景点</a></li>
+                            <li><a href="food.html">特色美食</a></li>
+                            <li><a href="guide.html">旅游攻略</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>热门建筑</h5>
+                        <ul>
+                            <li><a href="building1.html">天府广场</a></li>
+                            <li><a href="building2.html">蜀风雅韵川剧院</a></li>
+                            <li><a href="building3.html">成都电视塔</a></li>
+                            <li><a href="building4.html">杜甫草堂</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>景点详情</h5>
+                        <ul>
+                            <li><a href="panda-detail.html">大熊猫基地</a></li>
+                            <li><a href="kuanzhai-detail.html">宽窄巷子</a></li>
+                            <li><a href="jinli-detail.html">锦里古街</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 成都旅游指南 版权所有 | 精心打造每一份旅游体验
+            </div>
+        </div>
+    </div>
+
+    <!-- 轮播初始化脚本 -->
+    <script>
+        const swiper = new Swiper('.detail-swiper', {
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+        });
+    </script>
+</body>
+</html>

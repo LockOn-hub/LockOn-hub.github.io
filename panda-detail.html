@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成都大熊猫繁育研究基地 - 详情页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Inter", "Microsoft YaHei", sans-serif; 
+            color: #333; 
+            line-height: 1.6; 
+            background: linear-gradient(120deg, #fef7fb 0%, #f0f8fb 50%, #fcf1f7 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+        /* 导航栏样式（与主站一致） */
+        .nav { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 999; }
+        .nav-container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 18px 0; display: flex; justify-content: center; align-items: center; }
+        .nav a { color: #333; text-decoration: none; margin: 0 20px; font-size: 16px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+        .nav a:hover { color: #cd5c5c; }
+        .nav a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: #cd5c5c; transition: width 0.3s ease; }
+        .nav a:hover::after { width: 100%; }
+        /* 内容容器 */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto 60px; }
+        /* 轮播图样式 */
+        .detail-swiper { width: 100%; height: 450px; border-radius: 12px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); }
+        .swiper-slide { width: 100%; height: 100%; }
+        .swiper-img { width: 100%; height: 100%; object-fit: cover; }
+        /* 页面标题 */
+        .detail-title { margin-bottom: 30px; }
+        .detail-title h2 { color: #222; font-size: 30px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; }
+        .detail-title h2::before { content: ""; display: inline-block; width: 6px; height: 24px; background-color: #cd5c5c; margin-right: 12px; border-radius: 3px; }
+        .detail-breadcrumb { font-size: 14px; color: #666; }
+        .detail-breadcrumb a { color: #cd5c5c; text-decoration: none; }
+        .detail-breadcrumb a:hover { text-decoration: underline; }
+        /* 详情内容布局 */
+        .detail-content { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-bottom: 40px; }
+        /* 左侧主要内容 */
+        .main-content { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .content-section { margin-bottom: 30px; }
+        .content-section h3 { color: #222; font-size: 22px; font-weight: 600; margin-bottom: 15px; position: relative; padding-bottom: 8px; }
+        .content-section h3::after { content: ""; position: absolute; bottom: 0; left: 0; width: 50px; height: 2px; background-color: #cd5c5c; }
+        .content-section p { font-size: 15px; color: #666; line-height: 1.8; margin-bottom: 15px; }
+        .feature-list { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; }
+        .feature-item { display: flex; align-items: center; gap: 8px; background-color: #fef0f0; padding: 8px 16px; border-radius: 20px; font-size: 14px; color: #cd5c5c; }
+        .feature-item i { font-size: 14px; }
+        /* 右侧侧边栏（实用信息） */
+        .sidebar { background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); height: fit-content; }
+        .sidebar-title { font-size: 18px; font-weight: 600; color: #222; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+        .info-list { list-style: none; }
+        .info-item { display: flex; margin-bottom: 18px; align-items: flex-start; }
+        .info-icon { width: 24px; height: 24px; background-color: #fef0f0; color: #cd5c5c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; font-size: 12px; }
+        .info-text { flex: 1; }
+        .info-text label { font-size: 14px; color: #999; margin-bottom: 4px; display: block; }
+        .info-text value { font-size: 15px; color: #333; font-weight: 500; }
+        /* 周边推荐 */
+        .related-spots { background-color: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); }
+        .related-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .related-item { border-radius: 8px; overflow: hidden; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease; }
+        .related-item:hover { transform: translateY(-5px); }
+        .related-img { width: 100%; height: 120px; object-fit: cover; }
+        .related-info { padding: 15px; }
+        .related-info h4 { font-size: 16px; color: #222; font-weight: 500; margin-bottom: 5px; }
+        .related-info p { font-size: 13px; color: #666; line-height: 1.5; }
+        .related-link { text-decoration: none; display: block; }
+        /* 页脚样式（与主站一致） */
+        .footer { background-color: #222; color: white; padding: 60px 0 30px; }
+        .footer-container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 40px; }
+        .footer-logo { font-size: 24px; font-weight: 700; color: #cd5c5c; margin-bottom: 15px; }
+        .footer-desc { max-width: 300px; font-size: 14px; opacity: 0.7; line-height: 1.6; }
+        .footer-links { display: flex; gap: 40px; }
+        .footer-link-group h5 { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .footer-link-group ul { list-style: none; }
+        .footer-link-group li { margin-bottom: 10px; }
+        .footer-link-group a { color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.3s ease; }
+        .footer-link-group a:hover { opacity: 1; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.6; }
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .detail-content { grid-template-columns: 1fr; }
+            .detail-swiper { height: 350px; }
+        }
+        @media (max-width: 768px) {
+            .nav a { margin: 0 10px; font-size: 14px; }
+            .detail-title h2 { font-size: 26px; }
+            .main-content, .related-spots { padding: 25px; }
+            .content-section h3 { font-size: 20px; }
+            .detail-swiper { height: 280px; }
+            .footer-top { flex-direction: column; gap: 30px; }
+        }
+        @media (max-width: 480px) {
+            .related-list { grid-template-columns: 1fr; }
+            .detail-swiper { height: 220px; }
+        }
+    </style>
+    <!-- 引入图标库和轮播插件 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/Swiper/10.3.1/swiper-bundle.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <div class="nav-container">
+            <a href="index.html">首页</a>
+            <a href="scenic.html">必游景点</a>
+            <a href="food.html">特色美食</a>
+            <a href="guide.html">旅游攻略</a>
+        </div>
+    </div>
+
+    <!-- 内容容器 -->
+    <div class="container">
+        <!-- 轮播图 -->
+        <div class="detail-swiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="../img/555.jpg" alt="大熊猫基地全景" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/a43008c980bee53dd0cd153c52642388.jpg" alt="小熊猫" class="swiper-img">
+                </div>
+                <div class="swiper-slide">
+                    <img src="../img/9c7253728fc3b1a5420a7fa621a7a062.jpg" alt="大熊猫幼崽" class="swiper-img">
+                </div>
+            </div>
+            <!-- 轮播控制按钮 -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <!-- 页面标题和面包屑 -->
+        <div class="detail-title">
+            <h2>成都大熊猫繁育研究基地</h2>
+            <div class="detail-breadcrumb">
+                <a href="index.html">首页</a> > <a href="scenic.html">必游景点</a> > 大熊猫基地详情
+            </div>
+        </div>
+
+        <!-- 详情内容布局 -->
+        <div class="detail-content">
+            <!-- 左侧主要内容 -->
+            <div class="main-content">
+                <!-- 景点介绍 -->
+                <div class="content-section">
+                    <h3>景点介绍</h3>
+                    <p>成都大熊猫繁育研究基地位于成都市成华区熊猫大道1375号，始建于1987年，是中国政府实施大熊猫等濒危野生动物迁地保护工程的主要研究基地之一，国家AAAA级旅游景区。</p>
+                    <p>基地占地面积1500亩，绿化覆盖率达96%，模拟大熊猫野外栖息地环境，建有熊猫别墅、熊猫产房、熊猫科学探秘馆等多个功能区域。这里不仅是大熊猫繁育科研机构，也是全球知名的大熊猫观赏旅游目的地，每年接待游客超千万人次。</p>
+                    <p>基地内除了大熊猫，还栖息着小熊猫、黑颈鹤、孔雀等多种珍稀动物，形成了人与自然和谐共生的生态环境。游客可以在这里近距离观察大熊猫的生活习性，了解大熊猫繁育保护的科研成果，感受国宝的可爱与珍贵。</p>
+                </div>
+
+                <!-- 核心看点 -->
+                <div class="content-section">
+                    <h3>核心看点</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <i class="fa-solid fa-paw"></i> 大熊猫幼崽别墅
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-leaf"></i> 成年大熊猫活动区
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-flask"></i> 熊猫科学探秘馆
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-tree"></i> 竹林小道
+                        </div>
+                        <div class="feature-item">
+                            <i class="fa-solid fa-camera"></i> 熊猫拍照点
+                        </div>
+                    </div>
+                    <p><strong>大熊猫幼崽别墅</strong>：这里是最受游客欢迎的区域，可以看到刚出生不久的熊猫幼崽，它们或睡或爬，憨态可掬，是拍照打卡的绝佳地点（建议早上去，幼崽活跃度更高）。</p>
+                    <p><strong>成年大熊猫活动区</strong>：大片竹林环绕的活动场地，成年大熊猫在这里悠闲地吃竹子、打滚、爬树，展现出自然状态下的生活习性，适合观察大熊猫的行为特点。</p>
+                    <p><strong>熊猫科学探秘馆</strong>：通过互动展区、科普影片、标本展示等形式，介绍大熊猫的进化历史、生理特征、繁育保护等知识，适合亲子游和科普学习。</p>
+                </div>
+
+                <!-- 游玩贴士 -->
+                <div class="content-section">
+                    <h3>游玩贴士</h3>
+                    <p>1. <strong>最佳游览时间</strong>：上午7:30-10:00，此时大熊猫刚睡醒，活跃度高，吃竹子、活动的场景较多；下午大熊猫多处于休息状态，观赏性较低。</p>
+                    <p>2. <strong>交通建议</strong>：地铁3号线到熊猫大道站，出站后换乘景区直通车（5元/人）或打车（约10元）；自驾可导航至基地停车场（停车费20元/次）。</p>
+                    <p>3. <strong>避坑指南</strong>：避免节假日前往，人流量极大；穿舒适的运动鞋，基地内需要步行较多；景区内竹林茂密，夏季注意防蚊，冬季注意保暖。</p>
+                    <p>4. <strong>拍照技巧</strong>：使用长焦镜头拍摄大熊猫特写，避免使用闪光灯（会惊扰大熊猫）；幼崽别墅玻璃反光较强，可调整角度或用衣物遮挡反光。</p>
+                    <p>5. <strong>周边美食</strong>：基地出口处有熊猫主题餐厅，提供简餐和小吃；也可前往附近的熊猫大道美食街，品尝火锅、川菜等特色美食。</p>
+                </div>
+            </div>
+
+            <!-- 右侧侧边栏（实用信息） -->
+            <div class="sidebar">
+                <h3 class="sidebar-title">实用信息</h3>
+                <ul class="info-list">
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>开放时间</label>
+                            <value>7:30-18:00（4-10月）<br>8:00-17:30（11-3月）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>门票价格</label>
+                            <value>55元/人（成人）<br>27元/人（学生）<br>免费（1.3米以下儿童）</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-bus"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>公共交通</label>
+                            <value>地铁3号线熊猫大道站C口出<br>公交198路、655路直达</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>地址</label>
+                            <value>成都市成华区熊猫大道1375号</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>建议游玩时长</label>
+                            <value>3-4小时</value>
+                        </div>
+                    </li>
+                    <li class="info-item">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="info-text">
+                            <label>咨询电话</label>
+                            <value>028-83510033</value>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 周边推荐 -->
+        <div class="related-spots">
+            <h3>周边推荐景点</h3>
+            <div class="related-list">
+                <a href="kuanzhai-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/92c439afcdaf217646695c35800a15c1.jpg" alt="宽窄巷子" class="related-img">
+                        <div class="related-info">
+                            <h4>宽窄巷子</h4>
+                            <p>老成都市井文化代表，距离基地约15分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="jinli-detail.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/VCG211433457648.jpg" alt="锦里古街" class="related-img">
+                        <div class="related-info">
+                            <h4>锦里古街</h4>
+                            <p>三国文化主题古街，夜景迷人，距离基地约20分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="building4.html" class="related-link">
+                    <div class="related-item">
+                        <img src="../img/444.png" alt="杜甫草堂" class="related-img">
+                        <div class="related-info">
+                            <h4>杜甫草堂</h4>
+                            <p>古典园林式建筑，距离基地约25分钟车程</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-left">
+                    <div class="footer-logo">成都旅游指南</div>
+                    <p class="footer-desc">为您提供最全面的成都旅游资讯，带您领略天府之国的独特魅力</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h5>快速导航</h5>
+                        <ul>
+                            <li><a href="index.html">首页</a></li>
+                            <li><a href="js/scenic.html">必游景点</a></li>
+                            <li><a href="food.html">特色美食</a></li>
+                            <li><a href="js/guide.html">旅游攻略</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>热门建筑</h5>
+                        <ul>
+                            <li><a href="js/building1.html">天府广场</a></li>
+                            <li><a href="js/building2.html">蜀风雅韵川剧院</a></li>
+                            <li><a href="js/building3.html">成都电视塔</a></li>
+                            <li><a href="js/building4.html">杜甫草堂</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-link-group">
+                        <h5>景点详情</h5>
+                        <ul>
+                            <li><a href="panda-detail.html">大熊猫基地</a></li>
+                            <li><a href="kuanzhai-detail.html">宽窄巷子</a></li>
+                            <li><a href="jinli-detail.html">锦里古街</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 成都旅游指南 版权所有 | 精心打造每一份旅游体验
+            </div>
+        </div>
+    </div>
+
+    <!-- 轮播初始化脚本 -->
+    <script>
+        const swiper = new Swiper('.detail-swiper', {
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+        });
+    </script>
+</body>
+</html>

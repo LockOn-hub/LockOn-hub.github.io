@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夫妻肺片 - 特色美食</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; background-color: #faf7f2; color: #333; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        /* 导航栏 - 复用首页样式 */
+        .nav { 
+            background-color: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(12px); 
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03); 
+            position: sticky; 
+            top: 0; 
+            z-index: 999; 
+            padding: 15px 0;
+        }
+        .nav-wrap { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .nav-logo { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: #a62f00;
+            display: flex; 
+            align-items: center;
+        }
+        .nav-logo::after { 
+            content: "天府之国"; 
+            font-size: 14px; 
+            font-weight: 400; 
+            color: #666; 
+            margin-left: 8px; 
+        }
+        .nav-list { 
+            display: flex; 
+            gap: 35px; 
+        }
+        .nav-list a { 
+            font-size: 16px; 
+            font-weight: 500; 
+            color: #444; 
+            position: relative; 
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover { 
+            color: #a62f00; 
+        }
+        .nav-list a::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -6px; 
+            left: 0; 
+            width: 0; 
+            height: 2px; 
+            background-color: #a62f00; 
+            transition: width 0.3s ease; 
+        }
+        .nav-list a:hover::after { 
+            width: 100%; 
+        }
+        /* 详情页内容区 */
+        .detail { 
+            padding: 60px 0; 
+        }
+        .detail-header { 
+            text-align: center; 
+            margin-bottom: 50px;
+        }
+        .detail-header h1 { 
+            font-size: 38px; 
+            color: #222; 
+            margin-bottom: 15px;
+        }
+        .detail-header p { 
+            font-size: 18px; 
+            color: #666;
+        }
+        .detail-content { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; 
+            background-color: #fff; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+        .detail-img { 
+            width: 100%; 
+            height: 400px; 
+            border-radius: 12px; 
+            object-fit: cover;
+        }
+        .detail-text h3 { 
+            font-size: 24px; 
+            color: #a62f00; 
+            margin-bottom: 20px;
+        }
+        .detail-text p { 
+            font-size: 17px; 
+            color: #555; 
+            margin-bottom: 15px; 
+            line-height: 1.8;
+        }
+        .back-btn { 
+            display: inline-block; 
+            margin-top: 30px; 
+            padding: 10px 24px; 
+            background-color: #a62f00; 
+            color: #fff; 
+            border-radius: 8px; 
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover { 
+            background-color: #8c2600; 
+            transform: translateY(-3px);
+        }
+        /* 页脚 - 同步右下角紧凑布局 */
+        .footer { 
+            background-color: #222; 
+            color: white; 
+            padding: 60px 0 30px;
+        }
+        .footer-wrap { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            margin-bottom: 40px; 
+        }
+        .footer-left { 
+            flex: 1; 
+            min-width: 300px;
+        }
+        .footer-logo { 
+            font-size: 26px; 
+            font-weight: 700; 
+            color: #fff; 
+            margin-bottom: 15px;
+        }
+        .footer-desc { 
+            font-size: 14px; 
+            opacity: 0.7; 
+            line-height: 1.6;
+        }
+        .footer-nav-group { 
+            display: flex; 
+            gap: 40px; 
+        }
+        .footer-col { 
+            min-width: 120px;
+        }
+        .footer-col h5 { 
+            font-size: 16px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            position: relative; 
+            padding-bottom: 6px;
+        }
+        .footer-col h5::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 30px; 
+            height: 2px; 
+            background-color: #a62f00;
+        }
+        .footer-col ul { 
+            list-style: none;
+        }
+        .footer-col li { 
+            margin-bottom: 8px;
+        }
+        .footer-col a { 
+            font-size: 14px; 
+            opacity: 0.7; 
+            transition: all 0.3s ease;
+        }
+        .footer-col a:hover { 
+            opacity: 1; 
+            color: #a62f00; 
+            padding-left: 3px;
+        }
+        .footer-bottom { 
+            text-align: center; 
+            padding-top: 30px; 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            font-size: 13px; 
+            opacity: 0.6;
+        }
+        /* 移动端响应式 */
+        @media (max-width: 768px) {
+            .nav-wrap { flex-direction: column; gap: 15px; }
+            .nav-list { gap: 20px; }
+            .detail-content { grid-template-columns: 1fr; }
+            .detail-img { height: 300px; }
+            .footer-wrap { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 30px; 
+            }
+            .footer-nav-group { 
+                flex-direction: column; 
+                gap: 20px; 
+                width: 100%; 
+            }
+            .footer-col { 
+                min-width: 100%; 
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <div class="container nav-wrap">
+            <div class="nav-logo">成都旅游</div>
+            <div class="nav-list">
+                <a href="index.html">首页</a>
+                <a href="scenic.html">必游景点</a>
+                <a href="food.html">特色美食</a>
+                <a href="guide.html">旅游攻略</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情内容 -->
+    <div class="detail">
+        <div class="container">
+            <div class="detail-header">
+                <h1>夫妻肺片</h1>
+                <p>红油凉菜 · 川菜代表</p>
+            </div>
+            <div class="detail-content">
+                <img src="../img/VCG211433798406.jpg" alt="夫妻肺片" class="detail-img">
+                <div class="detail-text">
+                    <h3>美食特色</h3>
+                    <p>夫妻肺片由郭朝华、张田政夫妻创制于20世纪30年代，最初以牛杂为原料，后逐渐改进为以牛头皮、牛心、牛舌等优质部位为主。</p>
+                    <p>食材经精心卤制后切片，淋上秘制红油、酱油、花椒粉等调料，色泽红亮诱人，麻辣鲜香兼备，口感软糯弹牙，越吃越香。</p>
+                    <p>这道美食不仅是成都人餐桌上的常客，还入选了国家级非物质文化遗产名录，是川菜走向全国乃至世界的一张亮眼名片。</p>
+                    <a href="food.html" class="back-btn">返回美食列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        <div class="container footer-wrap">
+            <div class="footer-left">
+                <div class="footer-logo">成都旅游指南</div>
+                <p class="footer-desc">为您提供最全面的成都旅游资讯，带您领略天府之国的独特魅力，让每一次旅行都充满惊喜与美好。</p>
+            </div>
+            <div class="footer-nav-group">
+                <div class="footer-col">
+                    <h5>快速导航</h5>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="scenic.html">必游景点</a></li>
+                        <li><a href="food.html">特色美食</a></li>
+                        <li><a href="guide.html">旅游攻略</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>热门建筑</h5>
+                    <ul>
+                        <li><a href="building1.html">天府广场</a></li>
+                        <li><a href="building2.html">蜀风雅韵川剧院</a></li>
+                        <li><a href="building3.html">成都电视塔</a></li>
+                        <li><a href="building4.html">杜甫草堂</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 成都旅游指南 版权所有 | 精心打造每一份旅游体验
+        </div>
+    </div>
+</body>
+</html>
